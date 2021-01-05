@@ -4,18 +4,32 @@ import '../login.css';
 class Login extends Component {
     constructor(props){
         super(props)
-        this.emailInputref = React.createRef();
-        this.passwordInputref = React.createRef();
-
+        this.state = {
+            email:'',
+            password:'',
+        }
+        // this.emailInputref = React.createRef();
+        // this.passwordInputref = React.createRef();
 
     }
     handleFormsubmit = (e)=>{
         e.preventDefault()
-        console.log('hello');
-        console.log('emailInputref',this.emailInputref);
-        console.log('this.passwordInputref',this.passwordInputref);
+        console.log('state', this.state);
+        // console.log('emailInputref',this.emailInputref);
+        // console.log('this.passwordInputref',this.passwordInputref);
 
     }
+    handlePasswordChange = (e)=>{
+        this.setState({
+            email:e.target.value,
+        })
+    }
+    handleEmailChange = (e)=>{
+        this.setState({
+            password:e.target.value,
+        })
+    }
+   
    
     render() { 
         return ( 
@@ -37,14 +51,14 @@ class Login extends Component {
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="username" ref = {this.emailInputref}/>
+                                    <input type="text" class="form-control" placeholder="username" onChange ={this.handleEmailChange}/>
                                     
                                 </div>
                                 <div class="input-group form-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-key"></i></span>
                                     </div>
-                                    <input type="password" class="form-control" placeholder="password" ref = {this.passwordInputref} />
+                                    <input type="password" class="form-control" placeholder="password" onChange = {this.handlePasswordChange} />
                                 </div>
                                 <div class="row align-items-center remember">
                                     <input type="checkbox" />Remember Me
