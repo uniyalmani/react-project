@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { logoutUser } from "../actions/auth";
 class NavBar extends Component {
+  logOut = () => {
+    localStorage.removeItem("token");
+    this.props.dispatch(this.logoutUser());
+  };
   render() {
+    const { auth } = this.props;
     return (
       <nav className="nav">
         <div className="left-div">
@@ -20,7 +27,7 @@ class NavBar extends Component {
           />
           <input placeholder="Search" />
 
-          {/* <div className="search-results">
+          <div className="search-results">
             <ul>
               <li className="search-results-row">
                 <img
@@ -40,24 +47,36 @@ class NavBar extends Component {
           </div>
         </div>
         <div className="right-nav">
-          <div className="user">
-            <img
-              src="https://image.flaticon.com/icons/svg/2154/2154651.svg"
-              alt="user-dp"
-              id="user-dp"
-            />
-            <span>John Doe</span>
-          </div> */}
+          {auth.isLoggedin && (
+            <div className="user">
+              <img
+                src="https://image.flaticon.com/icons/svg/2154/2154651.svg"
+                alt="user-dp"
+                id="user-dp"
+              />
+              <span>{auth.user.name}</span>
+            </div>
+          )}
+
           <div className="nav-links ">
-            <ul className = "d-flax" >
-              <li className = "btn btn-success m-1">
-                <Link to="/login">Log in</Link>
-              </li>
-              <li className = "btn btn-danger m-1">
-                <Link to="/signout">Log out</Link>
-              </li>
-              <li className = "btn btn-info m-1">
-                <Link to="/signup">Register</Link>
+            <ul className="d-flax">
+              {!auth.isLoggedin && (
+                <li className="btn btn-success m-1">
+                  <Link to="/login">Log in</Link>
+                </li>
+              )}
+              {auth.isLoggedin && (
+                <li className="btn btn-danger m-1">
+                  <button onClick={this.logOut}>logout</button>
+                </li>
+              )}
+              {!auth.isLoggedin && (
+                <li className="btn btn-info m-1">
+                  <Link to="/signup">Register</Link>
+                </li>
+              )}
+              <li className="btn btn-info m-1">
+                <Link to="/setting">Setting</Link>
               </li>
             </ul>
           </div>
@@ -66,5 +85,10 @@ class NavBar extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+  };
+}
 
-export default NavBar;
+export default connect(mapStateToProps)(NavBar);

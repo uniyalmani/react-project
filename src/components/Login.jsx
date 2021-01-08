@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import '../login.css';
+import {clearAuthState, login} from '../actions/auth'
 
 class Login extends Component {
     constructor(props){
@@ -12,9 +14,17 @@ class Login extends Component {
         // this.passwordInputref = React.createRef();
 
     }
+    componentWillUnmount(){
+        this.props.dispatch(clearAuthState());
+    }
     handleFormsubmit = (e)=>{
         e.preventDefault()
-        console.log('state', this.state);
+        console.log('inside Submite');
+        const {email, password} = this.state;
+        if (email && password){
+            
+            this.props.dispatch(login(email, password))
+        }
         // console.log('emailInputref',this.emailInputref);
         // console.log('this.passwordInputref',this.passwordInputref);
 
@@ -32,6 +42,7 @@ class Login extends Component {
    
    
     render() { 
+        const {error, inProgress} = this.props.auth;
         return ( 
             <div className = 'body'>
             <div class="container">
@@ -39,6 +50,7 @@ class Login extends Component {
                     <div class="card">
                         <div class="card-header">
                             <h3>Sign In</h3>
+                            {error && <div className = "alert error-dailog">{error}</div>}
                             <div class="d-flex justify-content-end social_icon">
                                 <span><i class="fab fa-facebook-square"></i></span>
                                 <span><i class="fab fa-google-plus-square"></i></span>
@@ -64,8 +76,13 @@ class Login extends Component {
                                     <input type="checkbox" />Remember Me
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn float-right login_btn"  onClick = {this.handleFormsubmit}>Login1</button>
+                                    {inProgress?
+                                                <button class="btn float-right login_btn"  onClick = {this.handleFormsubmit} disabled = {inProgress}>Loggin in..</button>:
+                                                <button class="btn float-right login_btn"  onClick = {this.handleFormsubmit} >Login</button>
+                                    }
+                                    
                                 </div>
+
                             </form>
                         </div>
                         <div class="card-footer">
@@ -83,5 +100,10 @@ class Login extends Component {
          );
     }
 }
- 
-export default Login ;
+ function mapStateToProps(state){
+     console.log('hello', state);
+    return{
+        auth:state.auth,
+    }
+ }
+export default connect(mapStateToProps)(Login) ;
